@@ -26,7 +26,7 @@ class deleteMVC extends Command
     {
         if($this->confirm('Are you sure you want to delete the data '.$this->model.'?')){
             if ($this->confirm('Do you want to delete the migration file?')) {
-                File::delete(App::basePath(Str::ucfirst(config_path('mvc.path_model')).$this->model.'.php'));
+                File::delete(App::basePath(Str::ucfirst(config('mvc.path_model')).$this->model.'.php'));
                 $this->info('Model file successfully deleted');
                 $database=File::files(database_path('migrations'));
                 collect($database)->map(function ($data) {
@@ -42,8 +42,8 @@ class deleteMVC extends Command
                     }
                 });
             }else{
-                File::delete(App::basePath(Str::ucfirst(config_path('mvc.path_model')).$this->model.'.php'));
-                if (!File::exists(App::basePath(Str::ucfirst(config_path('mvc.path_model')).$this->model.'.php'))) {
+                File::delete(App::basePath(Str::ucfirst(config('mvc.path_model')).$this->model.'.php'));
+                if (!File::exists(App::basePath(Str::ucfirst(config('mvc.path_model')).$this->model.'.php'))) {
                     $this->info('Model file successfully deleted');
                 }
             }
@@ -59,13 +59,13 @@ class deleteMVC extends Command
 
             // route delete
             $lowerName = Str::lower(Str::snake($this->model,'-'));
-            $route=File::get(App::basePath(config_path('mvc.path_route')));
+            $route=File::get(App::basePath(config('mvc.path_route')));
             if (Str::contains($route, '//'.$lowerName)) {
                 $star = Str::of($route)->before('//'.$lowerName);
                 $end = Str::of($route)->after('//end-'.$lowerName);
                 $route = $star.$end;
                 $route= preg_replace('/^\h*\v+/m', '', $route);
-                File::put(App::basePath(config_path('mvc.path_route')), $route);
+                File::put(App::basePath(config('mvc.path_route')), $route);
                 $this->info('Route file successfully deleted'.PHP_EOL);
             }
 
