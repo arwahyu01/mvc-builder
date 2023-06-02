@@ -24,12 +24,6 @@ Made with ❤️ by <a href="https://github.com/arwahyu01" title="Ar. Wahyu Prad
 ```bash
 $ composer require arwp/mvc
 $ composer install or composer update
-# you need to publish the config file to your project first
-$ php artisan vendor:publish --provider="Arwp\Mvc\MvcServiceProvider"
-  #publised file config/mvc.php
-  #publised file routes/mvc-route.php
-  #publised file Console/Commands/createMvc.php
-  #publised file Console/Commands/deleteMvc.php
 ```
 ### Create a new module
 ```bash
@@ -50,6 +44,14 @@ add this code to your config/app.php
     ...
 ]
 ```
+you need to publish the resource file to your project
+```bash
+$ php artisan vendor:publish --provider="Arwp\Mvc\MvcServiceProvider"
+  #publised file config/mvc.php
+  #publised file routes/mvc-route.php
+  #publised file Console/Commands/createMvc.php
+  #publised file Console/Commands/deleteMvc.php
+````
 add this code to your routeServiceProvider.php
 ```
 public function boot()
