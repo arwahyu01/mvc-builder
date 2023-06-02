@@ -10,7 +10,7 @@ class MvcBuilder
 {
     private string $model;
     private array $fields=[];
-    private string $path_stub = 'vendor/mvc-builder/arwp/resources/stub';
+    private string $path_stub = 'vendor/arwp/mvc/resources/stub';
 
     public function createMvc($model,$fields): void
     {
