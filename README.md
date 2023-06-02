@@ -23,7 +23,6 @@ Made with ❤️ by <a href="https://github.com/arwahyu01" title="Ar. Wahyu Prad
 ## How to use :
 ```bash
 $ composer require arwp/mvc
-$ composer install or composer update
 ```
 ### Create a new module
 ```bash
