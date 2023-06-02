@@ -1,0 +1,22 @@
+{
+    "name": "arwp/mvc",
+    "description": "For building MVC application with Laravel",
+    "type": "library",
+    "license": "MIT",
+    "autoload": {
+        "psr-4": {
+            "Arwp\\Mvc\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "Ar Wahyu Pradana",
+            "email": "arwahyu01@gmail.com"
+        }
+    ],
+    "require": {
+        "php": ">=8.1",
+        "laravel/framework": "^8.0",
+        "laravelcollective/html": "^6.0"
+    }
+}
