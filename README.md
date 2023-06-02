@@ -50,6 +50,16 @@ add this code to your config/app.php
     ...
 ]
 ```
+add this code to your routeServiceProvider.php
+```
+public function boot()
+{
+    ...
+    Route::middleware(['web'])->namespace('App\Http\Controllers')->group(base_path('routes/mvc-route.php'));
+    ...
+}
+```
+
 open file config/mvc.php and change the key value to your path folder
 ```
 return [
