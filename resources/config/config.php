@@ -61,7 +61,7 @@ return [
     'path_model' => 'App\Models', // path to model folder (default: app/Models)
     'path_view' => 'views/backend', // path to view folder (default: resources/views)
     'path_route' => 'routes/mvc-route.php', // path to route file (default: routes/mvc-route.php)
-    'route_prefix' => 'backend', // route group prefix (e.g: 'admin', 'backend' etc.) (optional)
+    'route_prefix' => '', // Customize with your "Prefix Route" (e.g: 'admin', 'backend' etc.) (optional)
     'view' => $inputElements,
     'table' => "{ data: '{{ field }}' , 'defaultContent':''},",
     'column_types' => [
