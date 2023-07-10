@@ -1,4 +1,4 @@
-<h3 style="text-align: center"> MVC Generator V1.0.0 </h3>
+<h3 style="text-align: center"> MVC Generator V1.0.1 </h3>
 <p style="text-align: center">
 MVC Generator is a package that can help you to create a new module with CRUD function and also create a view for that module. This package is very useful for save your time.
 </p>
@@ -20,7 +20,7 @@ Made with ❤️ by <a href="https://github.com/arwahyu01" title="Ar. Wahyu Prad
   - [x] new route (with CRUD function)
 - Use `php artisan delete:mvc [name]` to delete a module (delete all file and table in database)
 
-## How to use :
+## How to install
 ```bash
 $ composer require arwp/mvc
 ```
@@ -87,4 +87,8 @@ Copy the code below to your route file (e.g: routes/web.php)
 ## License
 MVC Generator is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
 
-i hope this project can help you to make your project faster and easier to develop :)
+I hope this project can help you to make your project faster and easier to develop :)
+
+If you like this project, please give me a star ⭐️, thank you very much.
+
+Buy me a coffee ☕️ : [click here](https://trakteer.id/arwp)
