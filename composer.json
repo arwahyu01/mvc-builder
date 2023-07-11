@@ -10,11 +10,12 @@
     },
     "authors": [
         {
-            "name": "Ar Wahyu Pradana",
+            "name": "arwp",
             "email": "arwahyu01@gmail.com"
         }
     ],
     "require": {
-        "php": ">=8.1"
+        "php": ">=8.1",
+        "spatie/laravel-html": "^3.2"
     }
 }

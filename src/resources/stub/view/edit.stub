@@ -1,13 +1,13 @@
-{!! Form::open(['id'=>'form-create-'.$page->code, 'route' => [$page->url.'.update', $data->id], 'class' => 'form form-horizontal', 'method' => 'put', 'files' => TRUE]) !!}
+{!! html()->form('PUT', route($page->url.'.update', $data->id))->id('form-create-'.$page->code)->acceptsFiles()->class('form form form-horizontal')->open() !!}
 <div class="panel shadow-sm">
     <div class="panel-body">
         {{ $template }}
     </div>
 </div>
-{!! Form::hidden('table-id','datatable',['id'=>'table-id']) !!}
-{{--{!! Form::hidden('function', 'loadMenu(),sidebarMenu()' , ['id' => 'function']) !!}--}}
-{{--{!! Form::hidden('redirect', url($link.'/dashboard') , ['id' => 'redirect']) !!}--}}
-{!! Form::close() !!}
+{!! html()->hidden('table-id','datatable')->id('table-id') !!}
+{{--{!! html()->hidden('function','loadMenu(),sidebarMenu()')->id('function') !!}--}}
+{{--{!! html()->hidden('redirect',url('/dashboard'))->id('redirect') !!}--}}
+{!! html()->form()->close() !!}
 <style>
     .select2-container {
         z-index: 9999 !important;

@@ -4,21 +4,22 @@
  * path: config\mvc.php
  * description: this file is used for creating template for generating code in php artisan make:mvc
  * Please don't change this file if you don't understand what you do !!!
+ * this file is used for creating template for generating code in php artisan make:mvc
  */
 
 $inputElements = [
-    'text' => "<div class='form-group'>\n\t\t\t{!! Form::label('{{ field }}', '{{ title }}', array('class' => 'control-label')) !!}\n\t\t\t{!! Form::text('{{ field }}',NULL,['class'=>'form-control','id'=>'{{ field }}','placeholder'=>'Type {{ title }} here']) !!}\n\t\t</div>",
-    'number' => "<div class='form-group'>\n\t\t\t{!! Form::label('{{ field }}', '{{ title }}', array('class' => 'control-label')) !!}\n\t\t\t{!! Form::number('{{ field }}',NULL,['class'=>'form-control','id'=>'{{ field }}']) !!}\n\t\t</div>",
-    'file' => "<div class='form-group'>\n\t\t\t{!! Form::label('{{ field }}', '{{ title }}', array('class' => 'control-label')) !!}\n\t\t\t{!! Form::file('{{ field }}',NULL,['class'=>'form-control','id'=>'{{ field }}']) !!}\n\t\t</div>",
-    'textarea' => "<div class='form-group'>\n\t\t\t{!! Form::label('{{ field }}', '{{ title }}', array('class' => 'control-label')) !!}\n\t\t\t{!! Form::textarea('{{ field }}',NULL,['class'=>'form-control','id'=>'{{ field }}']) !!}\n\t\t</div>",
-    'select' => "<div class='form-group'>\n\t\t\t{!! Form::label('{{ field }}', '{{ title }}', array('class' => 'control-label')) !!}\n\t\t\t{!! Form::select('{{ field }}',[],NULL,['class'=>'form-control','id'=>'{{ field }}','placeholder'=>'Choose {{ title }}']) !!}\n\t\t</div>",
-    'select2' => "<div class='form-group'>\n\t\t\t{!! Form::label('{{ field }}', '{{ title }}', array('class' => 'control-label')) !!}\n\t\t\t{!! Form::select('{{ field }}',[],NULL,['class'=>'form-control select2','id'=>'{{ field }}','placeholder'=>'Choose {{ title }}']) !!}\n\t\t</div>",
-    'checkbox' => "<div class='form-group'>\n\t\t\t{!! Form::label('{{ field }}', '{{ title }}', array('class' => 'control-label')) !!}\n\t\t\t{!! Form::checkbox('{{ field }}',NULL,['class'=>'form-control','id'=>'{{ field }}']) !!}\n\t\t</div>",
-    'date' => " <div class='form-group'>\n\t\t\t{!! Form::label('{{ field }}', '{{ title }}', array('class' => 'control-label')) !!}\n\t\t\t{!! Form::date('{{ field }}',NULL,['class'=>'form-control','id'=>'{{ field }}']) !!}\n\t\t</div>",
-    'dateTime' => " <div class='form-group'>\n\t\t\t{!! Form::label('{{ field }}', '{{ title }}', array('class' => 'control-label')) !!}\n\t\t\t{!! Form::dateTime('{{ field }}',NULL,['class'=>'form-control','id'=>'{{ field }}']) !!}\n\t\t</div>",
-    'time' => " <div class='form-group'>\n\t\t\t{!! Form::label('{{ field }}', '{{ title }}', array('class' => 'control-label')) !!}\n\t\t\t{!! Form::time('{{ field }}',NULL,['class'=>'form-control','id'=>'{{ field }}']) !!}\n\t\t</div>",
-    'timestamp' => " <div class='form-group'>\n\t\t\t{!! Form::label('{{ field }}', '{{ title }}', array('class' => 'control-label')) !!}\n\t\t\t{!! Form::timestamp('{{ field }}',NULL,['class'=>'form-control','id'=>'{{ field }}']) !!}\n\t\t</div>",
-    'radio' => "<div class='form-group'>\n\t\t\t{!! Form::label('{{ field }}', '{{ title }}', array('class' => 'control-label')) !!}<br>\n\t\t\t{!! Form::radio('{{ field }}',NULL,['class'=>'form-control','id'=>'{{ field }}']) !!}\n\t\t</div>"
+    'text' => "<div class='form-group'>\n\t\t\t{!! html()->label()->class('control-label')->for('{{ field }}')->text('{{ title }}') !!}\n\t\t\t{!! html()->text('{{ field }}',NULL)->placeholder('Type {{ title }} here')->class('form-control')->id('{{ field }}') !!}\n\t\t</div>",
+    'number' => "<div class='form-group'>\n\t\t\t{!! html()->label()->class('control-label')->for('{{ field }}')->text('{{ title }}') !!}\n\t\t\t{!! html()->number('{{ field }}',NULL)->placeholder('Type {{ title }} here')->class('form-control')->id('{{ field }}') !!}\n\t\t</div>",
+    'file' => "<div class='form-group'>\n\t\t\t{!! html()->label()->class('control-label')->for('{{ field }}')->text('{{ title }}') !!}\n\t\t\t{!! html()->file('{{ field }}',NULL)->class('form-control')->id('{{ field }}') !!}\n\t\t</div>",
+    'textarea' => "<div class='form-group'>\n\t\t\t{!! html()->label()->class('control-label')->for('{{ field }}')->text('{{ title }}') !!}\n\t\t\t{!! html()->textarea('{{ field }}',NULL)->class('form-control')->id('{{ field }}') !!}\n\t\t</div>",
+    'select' => "<div class='form-group'>\n\t\t\t{!! html()->label()->class('control-label')->for('{{ field }}')->text('{{ title }}') !!}\n\t\t\t{!! html()->select('{{ field }}',[])->placeholder('Choose {{ title }} here')->class('form-control')->id('{{ field }}') !!}\n\t\t</div>",
+    'select2' => "<div class='form-group'>\n\t\t\t{!! html()->label()->class('control-label')->for('{{ field }}')->text('{{ title }}') !!}\n\t\t\t{!! html()->select('{{ field }}',[])->placeholder('Choose {{ title }} here')->class('form-control select2')->id('{{ field }}') !!}\n\t\t</div>",
+    'checkbox' => "<div class='form-group'>\n\t\t\t{!! html()->label()->class('control-label')->for('{{ field }}')->text('{{ title }}') !!}\n\t\t\t{!! html()->checkbox('{{ field }}',false,1)->class('form-control')->id('{{ field }}') !!}\n\t\t</div>",
+    'date' => " <div class='form-group'>\n\t\t\t{!! html()->label()->class('control-label')->for('{{ field }}')->text('{{ title }}') !!}\n\t\t\t{!! html()->date('{{ field }}',NULL)->class('form-control')->id('{{ field }}') !!}\n\t\t</div>",
+    'dateTime' => " <div class='form-group'>\n\t\t\t{!! html()->label()->class('control-label')->for('{{ field }}')->text('{{ title }}') !!}\n\t\t\t{!! html()->dateTime('{{ field }}',NULL)->class('form-control')->id('{{ field }}') !!}\n\t\t</div>",
+    'time' => " <div class='form-group'>\n\t\t\t{!! html()->label()->class('control-label')->for('{{ field }}')->text('{{ title }}') !!}\n\t\t\t{!! html()->time('{{ field }}',NULL)->class('form-control')->id('{{ field }}') !!}\n\t\t</div>",
+    'timestamp' => " <div class='form-group'>\n\t\t\t{!! html()->label()->class('control-label')->for('{{ field }}')->text('{{ title }}') !!}\n\t\t\t{!! html()->timestamp('{{ field }}',NULL)->class('form-control')->id('{{ field }}') !!}\n\t\t</div>",
+    'radio' => "<div class='form-group'>\n\t\t\t{!! html()->label()->class('control-label')->for('{{ field }}')->text('{{ title }}') !!}<br>\n\t\t\t{!! html()->radio('{{ field }}',false,1)->class('form-control')->id('{{ field }}') !!}\n\t\t</div>"
 ];
 return [
     'path_controller' => 'App/Http/Controllers/Backend', // path to controller folder (default: app/Http/Controllers)
