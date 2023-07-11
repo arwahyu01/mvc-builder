@@ -91,4 +91,4 @@ I hope this project can help you to make your project faster and easier to devel
 
 If you like this project, please give me a star ⭐️, thank you very much.
 
-Buy me a coffee ☕️ : [click here](https://trakteer.id/arwp)
+Buy me a coffee here ☕️ : [click here](https://trakteer.id/arwp) thank you for your support.
