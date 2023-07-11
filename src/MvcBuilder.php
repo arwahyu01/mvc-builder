@@ -365,8 +365,8 @@ class MvcBuilder extends GeneratorCommand
                     if ($field['field'] != 'id') {
                         $show .= "\t\t\t" . '<div class="col-md-' . (collect($this->fields)->count() > 1 ? '6' : '12') . '">' . PHP_EOL;
                         $show .= "\t\t\t\t" . '<div class="form-group">' . PHP_EOL;
-                        $show .= "\t\t\t\t\t" . '<label>' . Str::title(Str::replace('_', ' ', Str::snake(Str::before($field_name, '_id')))) . '</label>' . PHP_EOL;
-                        $show .= "\t\t\t\t\t" . '<input type="text" class="form-control" value="{{ $data->' . $field_name . ' }}" readonly>' . PHP_EOL;
+                        $show .= "\t\t\t\t\t" . '{!! html()->span()->text("'.Str::title(Str::replace('_', ' ', Str::snake(Str::before($field_name, '_id')))).'")->class("control-label") !!}' . PHP_EOL;
+                        $show .= "\t\t\t\t\t" . '{!! html()->p($data->' . $field_name . ')->class("form-control") !!}' . PHP_EOL;
                         $show .= "\t\t\t\t" . '</div>' . PHP_EOL;
                         $show .= "\t\t\t" . '</div>' . PHP_EOL;
                     }

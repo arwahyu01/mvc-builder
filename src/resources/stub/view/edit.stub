@@ -1,4 +1,4 @@
-{!! html()->form('PUT', route($page->url.'.update', $data->id))->id('form-create-'.$page->code)->acceptsFiles()->class('form form form-horizontal')->open() !!}
+{!! html()->modelForm($data,'PUT', route($page->url.'.update', $data->id))->id('form-create-'.$page->code)->acceptsFiles()->class('form form form-horizontal')->open() !!}
 <div class="panel shadow-sm">
     <div class="panel-body">
         {{ $template }}
@@ -7,7 +7,7 @@
 {!! html()->hidden('table-id','datatable')->id('table-id') !!}
 {{--{!! html()->hidden('function','loadMenu(),sidebarMenu()')->id('function') !!}--}}
 {{--{!! html()->hidden('redirect',url('/dashboard'))->id('redirect') !!}--}}
-{!! html()->form()->close() !!}
+{!! html()->closeModelForm() !!}
 <style>
     .select2-container {
         z-index: 9999 !important;
