@@ -21,7 +21,7 @@ class MvcBuilder extends GeneratorCommand
 
     public function handle()
     {
-        $this->model = Str::pluralStudly(Str::ucfirst(Str::camel($this->cleanString($this->argument('model'), ' '))));
+        $this->model = Str::ucfirst(Str::camel($this->cleanString($this->argument('model'), ' ')));
         if (File::exists(App::basePath(config('mvc.path_controller')) . '/' . $this->model)) {
             $this->info('Oops, your module ' . $this->model . ' already exists !');
             $confirm = $this->confirm('Do you want to delete it, and create a new one ?');
@@ -42,8 +42,9 @@ class MvcBuilder extends GeneratorCommand
     {
         $this->info('Preparing to create MVC for ' . $this->model);
         $this->inputModelFields();
-        $this->createMvc($this->model, $this->fields);
+        $this->migrationBuilder();
         $this->info('MVC ' . $this->model . ' created successfully');
+
         $this->call('route:clear');
         $this->call('view:clear');
         $this->call('cache:clear');
@@ -54,9 +55,9 @@ class MvcBuilder extends GeneratorCommand
     private function inputModelFields(): void
     {
         $field = $this->ask('Type a field name (push enter to skip)');
-        if (Str::lower($field) != '') {
+        if ($field != '') {
             $field = Str::lower($this->cleanString($field, '_'));
-            $dataType = $this->choiceDataTypes($this->dataTypes($field), $field);
+            $dataType = $this->chooseDataTypes($this->dataTypes($field), $field);
             $relation = $this->confirm('This field has a relation ? ' . $field);
             if($relation){
                 $model = Str::ucfirst(Str::camel(Str::replace('_id', '', $field)));
@@ -74,11 +75,11 @@ class MvcBuilder extends GeneratorCommand
             $this->fields[] = [
                 'field' => $field, 'type' => $dataType,'view' => $typeInput, 'relation' => $relation, 'type_relation' => $type_relation ?? null
             ];
-            $this->inputModelFields();
+            $this->inputModelFields(); // recursive
         }
     }
 
-    private function choiceDataTypes($dataType, $field): string
+    private function chooseDataTypes($dataType, $field): string
     {
         $data_type = Str::camel($this->cleanString($dataType, ' '));
         $type = collect(config('mvc.column_types'))->filter(function ($item) use ($data_type) {
@@ -86,7 +87,7 @@ class MvcBuilder extends GeneratorCommand
         })->first();
         if (!is_null($type)) return $type;
         $this->error('Your input "' . $dataType . '" for field "' . $field . '" is not found in the list');
-        return $this->choiceDataTypes($this->dataTypes($field), $field);
+        return $this->chooseDataTypes($this->dataTypes($field), $field);
     }
 
     private function dataTypes($field): string
@@ -101,13 +102,6 @@ class MvcBuilder extends GeneratorCommand
             }
         }
         return $type;
-    }
-
-    public function createMvc($model, $fields): void
-    {
-        $this->model = $model;
-        $this->fields = $fields;
-        $this->migrationBuilder();
     }
 
     /**
@@ -295,13 +289,9 @@ class MvcBuilder extends GeneratorCommand
         $table .= "\t" . '<tr>' . PHP_EOL;
         $table .= "\t\t" . '<th class="w-0">No</th>' . PHP_EOL;
         foreach ($this->fields as $field) {
-            if ($field['type'] != 'uuidMorphs') {
-                if ($field['view'] != "No Input Elements") {
-                    if ($field['field'] != 'id') {
-                        $field_name = Str::replace('_morph', '', $field['field']);
-                        $table .= "\t\t" . '<th>' . Str::title(Str::replace('_', ' ', Str::snake(Str::before($field_name, '_id')))) . '</th>' . PHP_EOL;
-                    }
-                }
+            if ($field['type'] != 'uuidMorphs' && $field['view'] != "No Input Elements" && $field['field'] != 'id') {
+                $field_name = Str::replace('_morph', '', $field['field']);
+                $table .= "\t\t" . '<th>' . Str::title(Str::replace('_', ' ', Str::snake(Str::before($field_name, '_id')))) . '</th>' . PHP_EOL;
             }
         }
         $table .= "\t\t" . '<th class="text-center w-0">Action</th>' . PHP_EOL;
@@ -318,13 +308,9 @@ class MvcBuilder extends GeneratorCommand
     {
         $field_columns = '';
         foreach ($this->fields as $field) {
-            if ($field['type'] != 'uuidMorphs') {
-                if ($field['view'] != "No Input Elements") {
-                    if ($field['field'] != 'id') {
-                        $field_name = Str::replace('_morph', '', $field['field']);
-                        $field_columns .= Str::replace('{{ field }}', $field_name, config('mvc.table')) . PHP_EOL;
-                    }
-                }
+            if ($field['type'] != 'uuidMorphs' && $field['view'] != "No Input Elements" && $field['field'] != 'id') {
+                $field_name = Str::replace('_morph', '', $field['field']);
+                $field_columns .= Str::replace('{{ field }}', $field_name, config('mvc.table')) . PHP_EOL;
             }
         }
         $field_columns = Str::replace(PHP_EOL, PHP_EOL . "\t\t\t", $field_columns);
@@ -335,21 +321,19 @@ class MvcBuilder extends GeneratorCommand
     {
         $field_input = '';
         foreach ($this->fields as $field) {
-            if ($field['view'] != "No Input Elements") {
-                if ($field['type'] != 'uuidMorphs') {
-                    $field_name = Str::replace('_morph', '', $field['field']);
-                    if ($field['field'] != 'id') {
-                        if (collect(collect(config('mvc.view'))->keys()->toArray())->contains($field['view'])) {
-                            $field_input .= Str::replace('{{ field }}', $field_name, config('mvc.view.' . $field['view'])) . PHP_EOL . "\t\t";
-                        } else {
-                            $field_input .= Str::replace('{{ field }}', $field_name, config('mvc.view.text')) . PHP_EOL . "\t\t";
-                        }
-                        if ($action == 'edit') {
-                            $field_input = Str::replace('NULL', '$data->' . $field_name, $field_input);
-                        }
+            if ($field['view'] != "No Input Elements" && $field['type'] != 'uuidMorphs') {
+                $field_name = Str::replace('_morph', '', $field['field']);
+                if ($field['field'] != 'id') {
+                    if (collect(collect(config('mvc.view'))->keys()->toArray())->contains($field['view'])) {
+                        $field_input .= Str::replace('{{ field }}', $field_name, config('mvc.view.' . $field['view'])) . PHP_EOL . "\t\t";
+                    } else {
+                        $field_input .= Str::replace('{{ field }}', $field_name, config('mvc.view.text')) . PHP_EOL . "\t\t";
                     }
-                    $field_input = Str::replace('{{ title }}', Str::title(Str::replace('_', ' ', Str::snake(Str::before($field_name, '_id')))), $field_input);
+                    if ($action == 'edit') {
+                        $field_input = Str::replace('NULL', '$data->' . $field_name, $field_input);
+                    }
                 }
+                $field_input = Str::replace('{{ title }}', Str::title(Str::replace('_', ' ', Str::snake(Str::before($field_name, '_id')))), $field_input);
             }
         }
         return Str::beforeLast($field_input, PHP_EOL);
@@ -359,18 +343,14 @@ class MvcBuilder extends GeneratorCommand
     {
         $show = '<div class="row">' . PHP_EOL;
         foreach ($this->fields as $field) {
-            if ($field['type'] != 'uuidMorphs') {
-                if ($field['view'] != "No Input Elements") {
-                    $field_name = Str::replace('_morph', '', $field['field']);
-                    if ($field['field'] != 'id') {
-                        $show .= "\t\t\t" . '<div class="col-md-' . (collect($this->fields)->count() > 1 ? '6' : '12') . '">' . PHP_EOL;
-                        $show .= "\t\t\t\t" . '<div class="form-group">' . PHP_EOL;
-                        $show .= "\t\t\t\t\t" . '{!! html()->span()->text("'.Str::title(Str::replace('_', ' ', Str::snake(Str::before($field_name, '_id')))).'")->class("control-label") !!}' . PHP_EOL;
-                        $show .= "\t\t\t\t\t" . '{!! html()->p($data->' . $field_name . ')->class("form-control") !!}' . PHP_EOL;
-                        $show .= "\t\t\t\t" . '</div>' . PHP_EOL;
-                        $show .= "\t\t\t" . '</div>' . PHP_EOL;
-                    }
-                }
+            if ($field['type'] != 'uuidMorphs' && $field['view'] != "No Input Elements" && $field['field'] != 'id') {
+                $field_name = Str::replace('_morph', '', $field['field']);
+                $show .= "\t\t\t" . '<div class="col-md-' . (collect($this->fields)->count() > 1 ? '6' : '12') . '">' . PHP_EOL;
+                $show .= "\t\t\t\t" . '<div class="form-group">' . PHP_EOL;
+                $show .= "\t\t\t\t\t" . '{!! html()->span()->text("'.Str::title(Str::replace('_', ' ', Str::snake(Str::before($field_name, '_id')))).'")->class("control-label") !!}' . PHP_EOL;
+                $show .= "\t\t\t\t\t" . '{!! html()->p($data->' . $field_name . ')->class("form-control") !!}' . PHP_EOL;
+                $show .= "\t\t\t\t" . '</div>' . PHP_EOL;
+                $show .= "\t\t\t" . '</div>' . PHP_EOL;
             }
         }
         $show .= "\t\t" . '</div>' . PHP_EOL;
@@ -404,12 +384,8 @@ class MvcBuilder extends GeneratorCommand
     {
         $fields = '';
         foreach ($this->fields as $field) {
-            if ($field['type'] != 'uuidMorphs') {
-                if ($field['view'] != "No Input Elements") {
-                    if ($field['field'] != 'id') {
-                        $fields .= "'" . Str::replace('_morph', '', $field['field']) . "' => 'required'," . PHP_EOL . "\t\t\t";
-                    }
-                }
+            if ($field['type'] != 'uuidMorphs' && $field['view'] != "No Input Elements" && $field['field'] != 'id') {
+                $fields .= "'" . Str::replace('_morph', '', $field['field']) . "' => 'required'," . PHP_EOL . "\t\t\t";
             }
         }
         return Str::beforeLast($fields, PHP_EOL);
