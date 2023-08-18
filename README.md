@@ -56,7 +56,7 @@ add this code to your routeServiceProvider.php
 public function boot()
 {
     ...
-    Route::middleware(['web'])->namespace('App\Http\Controllers')->group(base_path('routes/mvc-route.php'));
+    Route::middleware(['web','auth','backend'])->namespace('App\Http\Controllers\Backend')->group(base_path('routes/mvc-route.php'));
     ...
 }
 ```

@@ -196,7 +196,7 @@ class MvcBuilder extends GeneratorCommand
         File::copy($this->path_stub . '/model/model.stub', $target_model);
         if (File::exists($target_model)) {
             $file = File::get($target_model);
-            $replaced = Str::replace('{{ namespace }}', Str::ucfirst(config('mvc.path_model')), $file);
+            $replaced = Str::replace('{{ namespace }}', Str::replace('/', '\\', config('mvc.path_model')), $file);
             $replaced = Str::replace('{{ class }}', $this->model, $replaced);
             $replaced = Str::replace('{{ fillable }}', $this->createModelFields(), $replaced);
             $replaced = Str::replaceLast('}', $this->createRelations() . '}', $replaced);

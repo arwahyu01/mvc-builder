@@ -23,7 +23,7 @@ $inputElements = [
 ];
 return [
     'path_controller' => 'App/Http/Controllers/Backend', // path to controller folder (default: app/Http/Controllers)
-    'path_model' => 'App\Models', // path to model folder (default: app/Models)
+    'path_model' => 'app\Models', // path to model folder (default: app/Models)
     'path_view' => 'views/backend', // path to view folder (default: resources/views)
     'path_route' => 'routes/mvc-route.php', // path to route file (default: routes/mvc-route.php)
     'route_prefix' => 'admin', // Customize with your "Prefix Route" (e.g: 'admin', 'backend' etc.) (optional)
