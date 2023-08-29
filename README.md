@@ -64,14 +64,14 @@ public function boot()
 open file config/mvc.php and change the key value to your path folder
 ```
 return [
-    'path_controller' => 'App/Http/Controllers/Backend', // this is path to controller folder
-    'path_model' => 'App\Models', // this is path to model folder
+    'path_controller' => 'app/Http/Controllers/Backend', // this is path to controller folder
+    'path_model' => 'app/Models', // this is path to model folder
     'path_view' => 'views/backend', // this is path to view folder (e.g: views/backend or views/frontend)
     'path_route' => 'routes/mvc-route.php', // path to route file (default: routes/mvc-route.php)
     'route_prefix' => '', // Customize with your "Prefix Route" (e.g: backend, admin, etc) (optional)
 ];
 ```
-if you want to change the default "PATH ROUTE" you can change it in config/mvc.php
+If you want to change the default "PATH ROUTE," you can do so in config/mvc.php.
 ```
 return [
     ...
