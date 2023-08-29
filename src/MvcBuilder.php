@@ -196,7 +196,7 @@ class MvcBuilder extends GeneratorCommand
         File::copy($this->path_stub . '/model/model.stub', $target_model);
         if (File::exists($target_model)) {
             $file = File::get($target_model);
-            $replaced = Str::replace('{{ namespace }}', Str::replace('/', '\\', config('mvc.path_model')), $file);
+            $replaced = Str::replace('{{ namespace }}', Str::ucfirst(Str::replace('/', '\\', config('mvc.path_model'))), $file);
             $replaced = Str::replace('{{ class }}', $this->model, $replaced);
             $replaced = Str::replace('{{ fillable }}', $this->createModelFields(), $replaced);
             $replaced = Str::replaceLast('}', $this->createRelations() . '}', $replaced);
@@ -214,7 +214,12 @@ class MvcBuilder extends GeneratorCommand
         foreach ($this->fields as $field) {
             if (Str::contains($field['field'], '_id') && $field['relation']) {
                 $name = Str::replace('_id', '', $field['field']);
-                $function .= "\tpublic function " . Str::lower($name) . "()" . PHP_EOL . "\t" . "{" . PHP_EOL . "\t\t" . "return \$this->".$field['type_relation']."(" . Str::ucfirst(Str::camel($name)) . "::class);" . PHP_EOL . "\t" . "}" . PHP_EOL;
+                if ($field['field'] == 'parent_id') {
+                    $target_relation = "(" . $this->model . "::class);";
+                }else{
+                    $target_relation = "(" . Str::ucfirst(Str::camel($name)) . "::class);";
+                }
+                $function .= "\t" . "public function " . Str::lower($name) . "()" . PHP_EOL . "\t" . "{" . PHP_EOL . "\t\t" . "return \$this->" . $field['type_relation'] . $target_relation . PHP_EOL . "\t" . "}" . PHP_EOL;
             }
         }
         return PHP_EOL . $function;
@@ -369,7 +374,7 @@ class MvcBuilder extends GeneratorCommand
         File::copy($this->path_stub . '/controller/controller.stub', $path_controller);
         if (File::exists($path_controller)) {
             $file_controller = File::get($path_controller);
-            $replaced = Str::replace('{{ namespace }}', Str::replace('/', '\\', config('mvc.path_controller')) . '\\' . $this->model, $file_controller);
+            $replaced = Str::replace('{{ namespace }}', Str::ucfirst(Str::replace('/', '\\', config('mvc.path_controller'))) . '\\' . $this->model, $file_controller);
             $replaced = Str::replace('{{ class }}', $this->model . 'Controller', $replaced);
             $replaced = Str::replace('{{ $validation }}', $this->createValidation(), $replaced);
             File::put($path_controller, $replaced);
