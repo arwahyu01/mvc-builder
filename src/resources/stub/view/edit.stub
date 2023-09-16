@@ -5,7 +5,7 @@
     </div>
 </div>
 {!! html()->hidden('table-id','datatable')->id('table-id') !!}
-{{--{!! html()->hidden('function','loadMenu(),sidebarMenu()')->id('function') !!}--}}
+{{--{!! html()->hidden('function','loadMenu,sidebarMenu')->id('function') !!}--}}
 {{--{!! html()->hidden('redirect',url('/dashboard'))->id('redirect') !!}--}}
 {!! html()->closeModelForm() !!}
 <style>

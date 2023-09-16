@@ -1,6 +1,9 @@
 <h3 style="text-align: center"> MVC Generator V1.0.1 </h3>
 <p style="text-align: center">
 MVC Generator is a package that can help you to create a new module with CRUD function and also create a view for that module. This package is very useful for save your time.
+<br>
+This library is specifically designed for <a href="https://packagist.org/packages/arwp/main-master" title="Laravel">arwp/main-master</a>  
+, and the code structure within this library is tailored to support that template. 
 </p>
 <p style="text-align: center">
 Made with ❤️ by <a href="https://github.com/arwahyu01" title="Ar. Wahyu Pradana">ARWP</a>

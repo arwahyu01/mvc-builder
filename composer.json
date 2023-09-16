@@ -1,6 +1,6 @@
 {
     "name": "arwp/mvc",
-    "description": "For building MVC application with Laravel",
+    "description": "For building Model-View-Controller (MVC) pattern in laravel",
     "type": "library",
     "license": "MIT",
     "autoload": {

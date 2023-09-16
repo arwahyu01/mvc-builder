@@ -48,8 +48,8 @@ class MvcBuilder extends GeneratorCommand
         $this->call('route:clear');
         $this->call('view:clear');
         $this->call('cache:clear');
-        $this->info('Run "php artisan migrate" to migrate database');
         $this->info('Finished');
+        $this->info('Please Run "php artisan migrate" to migrate database');
     }
 
     private function inputModelFields(): void
