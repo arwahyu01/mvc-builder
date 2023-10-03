@@ -69,11 +69,19 @@ class MvcBuilder extends GeneratorCommand
                 }
             }
             $this->info('Field : "' . $field . '", Type : "' . $dataType . '", Relation : "' . ($relation ? 'Yes, ' . ($type_relation ?? '') : 'No') . '"');
-            $choice = collect(collect(config('template.view'))->keys())->prepend('No Input Elements')->toArray();
+            $choice = collect(collect(config('mvc.view'))->keys())->prepend('No Input Elements')->toArray();
             $typeInput = $this->choice('Choose Input Element', $choice, 0);
+            if ($typeInput == 'radio') {
+                $options = [];
+                $option = $this->ask('Type option value {key:value:true/false} (push enter to skip)');
+                while ($option != '') {
+                    $options[] = explode(':', $option);
+                    $option = $this->ask('Type option value {key:value} (push enter to skip)');
+                }
+            }
             $this->info('Input Element : "' . $typeInput . '"');
-            $this->fields[] = [
-                'field' => $field, 'type' => $dataType,'view' => $typeInput, 'relation' => $relation, 'type_relation' => $type_relation ?? null
+            $this->fields[]=[
+                'field'=>$field, 'type'=>$dataType, 'view'=>$typeInput, 'relation'=>$relation, 'type_relation'=>$type_relation ?? null, 'options'=>$options ?? [],
             ];
             $this->inputModelFields(); // recursive
         }
@@ -329,13 +337,21 @@ class MvcBuilder extends GeneratorCommand
             if ($field['view'] != "No Input Elements" && $field['type'] != 'uuidMorphs') {
                 $field_name = Str::replace('_morph', '', $field['field']);
                 if ($field['field'] != 'id') {
-                    if (collect(collect(config('mvc.view'))->keys()->toArray())->contains($field['view'])) {
-                        $field_input .= Str::replace('{{ field }}', $field_name, config('mvc.view.' . $field['view'])) . PHP_EOL . "\t\t";
+                    if ($field['view'] == 'radio') {
+                        foreach ($field['options'] as $item) {
+                            $input=Str::replace('{{ field }}', $field_name, config('mvc.view.radio'));
+                            $input=Str::replace('{{ true }}', $item[2], $input);
+                            $field_input.=Str::replace('{{ key }}', $item[0], Str::replace('{{ value }}', $item[1], $input)).PHP_EOL."\t\t";
+                        }
                     } else {
-                        $field_input .= Str::replace('{{ field }}', $field_name, config('mvc.view.text')) . PHP_EOL . "\t\t";
-                    }
-                    if ($action == 'edit') {
-                        $field_input = Str::replace('NULL', '$data->' . $field_name, $field_input);
+                        if (collect(collect(config('mvc.view'))->keys()->toArray())->contains($field['view'])) {
+                            $field_input.=Str::replace('{{ field }}', $field_name, config('mvc.view.'.$field['view'])).PHP_EOL."\t\t";
+                        } else {
+                            $field_input.=Str::replace('{{ field }}', $field_name, config('mvc.view.text')).PHP_EOL."\t\t";
+                        }
+                        if ($action == 'edit') {
+                            $field_input=Str::replace('NULL', '$data->'.$field_name, $field_input);
+                        }
                     }
                 }
                 $field_input = Str::replace('{{ title }}', Str::title(Str::replace('_', ' ', Str::snake(Str::before($field_name, '_id')))), $field_input);
