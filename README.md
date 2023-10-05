@@ -30,7 +30,14 @@ $ composer require arwp/mvc
 ### Create a new module
 ```bash
 # run this command to create a new module
-$ php artisan make:mvc [name of model] ['migration', 'model', 'view', 'controller', 'route'] or ['mvctr']
+$ php artisan make:mvc [name of model]
+# example 
+$ php artisan make:mvc User 
+# or custom command :
+# e.g: php artisan make:mvc User mv to create model and view
+$ php artisan make:mvc User mv #{m=model, v=view, c=controller, t=table/migration, r=route}
+# or custom command :
+$ php artisan make:mvc User view #['migration', 'model', 'view', 'controller', 'route']
 ```
 ### Delete a module (delete all file and table in database)
 ```bash
