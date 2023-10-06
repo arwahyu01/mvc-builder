@@ -45,7 +45,10 @@ class MvcBuilder extends GeneratorCommand
             }
         }
         $this->model_name=Str::ucfirst(Str::camel($this->cleanString($this->argument('model'), ' ')));
-        if (File::exists(App::basePath(config('mvc.path_controller')).'/'.$this->model_name)) {
+        $check_model=File::exists(App::basePath(config('mvc.path_model')).'/'.$this->model_name.'.php');
+        $check_view=File::exists(resource_path(config('mvc.path_view').'/'.Str::snake($this->model_name, '-')));
+        $check_controller=File::exists(App::basePath(config('mvc.path_controller')).'/'.$this->model_name.'Controller.php');
+        if ($check_controller || $check_model || $check_view) {
             $this->info('Oops, your module '.$this->model_name.' already exists !');
             if ($this->confirm('Do you want to delete it, and create a new one ?')) {
                 $this->call('delete:mvc', ['module'=>$this->model_name]);
@@ -62,21 +65,36 @@ class MvcBuilder extends GeneratorCommand
     public function build(): void
     {
         $this->info('Preparing to create MVC for '.$this->model_name);
-        $this->inputModelFields();
-        if ($this->migration) {
-            $this->migrationBuilder();
-        }
-        if ($this->model) {
-            $this->modelBuilder();
-        }
-        if ($this->view) {
-            $this->bladeViewBuilder();
-        }
-        if ($this->controller) {
-            $this->controllerBuilder();
-        }
-        if ($this->route) {
+        $mvc=Str::lower($this->argument('mvc') ?? '');
+        if ($mvc == 'route' || $mvc == 'r') {
             $this->routeBuilder();
+        } else {
+            $this->inputModelFields();
+            if ($mvc == 'migration' || $mvc == 't') {
+                $this->migrationBuilder();
+            } elseif ($mvc == 'model' || $mvc == 'm') {
+                $this->modelBuilder();
+            } elseif ($mvc == 'view' || $mvc == 'v') {
+                $this->bladeViewBuilder();
+            } elseif ($mvc == 'controller' || $mvc == 'c') {
+                $this->controllerBuilder();
+            } else {
+                if ($this->migration) {
+                    $this->migrationBuilder();
+                }
+                if ($this->model) {
+                    $this->modelBuilder();
+                }
+                if ($this->view) {
+                    $this->bladeViewBuilder();
+                }
+                if ($this->controller) {
+                    $this->controllerBuilder();
+                }
+                if ($this->route) {
+                    $this->routeBuilder();
+                }
+            }
         }
         $this->info('MVC '.$this->model_name.' created successfully');
         $this->call('route:clear');
@@ -92,30 +110,34 @@ class MvcBuilder extends GeneratorCommand
         if ($field != '') {
             $field=Str::lower($this->cleanString($field, '_'));
             $dataType=$this->chooseDataTypes($this->dataTypes($field), $field);
-            $relation=$this->confirm('This field has a relation ? '.$field);
-            if ($relation) {
-                $model=Str::ucfirst(Str::camel(Str::replace('_id', '', $field)));
-                if (File::exists(App::basePath(config('mvc.path_model').'/'.$model.'.php'))) {
-                    $type_relation=$this->choice('Choose Relation Type', ['BelongsTo', 'HasMany', 'HasOne', 'BelongsToMany'], 0);
-                } else {
-                    $this->warn('Model '.$model.' not found, please create it first !');
-                    $this->inputModelFields();
+            if ($this->model) {
+                $relation=$this->confirm('This field has a relation ? '.$field);
+                if ($relation) {
+                    $model=Str::ucfirst(Str::camel(Str::replace('_id', '', $field)));
+                    if (File::exists(App::basePath(config('mvc.path_model').'/'.$model.'.php'))) {
+                        $type_relation=$this->choice('Choose Relation Type', ['BelongsTo', 'HasMany', 'HasOne', 'BelongsToMany'], 0);
+                    } else {
+                        $this->warn('Model '.$model.' not found, please create it first !');
+                        $this->inputModelFields();
+                    }
                 }
+                $this->info('Field : "'.$field.'", Type : "'.$dataType.'", Relation : "'.($relation ? 'Yes, '.($type_relation ?? '') : 'No').'"');
             }
-            $this->info('Field : "'.$field.'", Type : "'.$dataType.'", Relation : "'.($relation ? 'Yes, '.($type_relation ?? '') : 'No').'"');
-            $choice=collect(collect(config('mvc.view'))->keys())->prepend('No Input Elements')->toArray();
-            $typeInput=$this->choice('Choose Input Element', $choice, 0);
-            if ($typeInput == 'radio') {
-                $options=[];
-                $option=$this->ask('Type option value {key:value:true/false} (push enter to skip)');
-                while ($option != '') {
-                    $options[]=explode(':', $option);
+            if ($this->view) {
+                $choice=collect(collect(config('mvc.view'))->keys())->prepend('No Input Elements')->toArray();
+                $typeInput=$this->choice('Choose Input Element', $choice, 0);
+                if ($typeInput == 'radio') {
+                    $options=[];
                     $option=$this->ask('Type option value {key:value:true/false} (push enter to skip)');
+                    while ($option != '') {
+                        $options[]=explode(':', $option);
+                        $option=$this->ask('Type option value {key:value:true/false} (push enter to skip)');
+                    }
                 }
+                $this->info('Input Element : "'.$typeInput.'"');
             }
-            $this->info('Input Element : "'.$typeInput.'"');
             $this->fields[]=[
-                'field'=>$field, 'type'=>$dataType, 'view'=>$typeInput, 'relation'=>$relation, 'type_relation'=>$type_relation ?? null, 'options'=>$options ?? [],
+                'field'=>$field, 'type'=>$dataType, 'view'=>$typeInput ?? null, 'relation'=>$relation ?? false, 'type_relation'=>$type_relation ?? null, 'options'=>$options ?? [],
             ];
             $this->inputModelFields(); // recursive
         }
