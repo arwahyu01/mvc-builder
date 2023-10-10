@@ -25,7 +25,6 @@ class MvcDestroy extends Command
     public function build(): void
     {
         if ($this->confirm('Are you sure you want to delete the MVC '.$this->model.'?')) {
-            $this->choice('What do you want to delete?', ['Model', 'View', 'Controller', 'Migration', 'Route', 'All'], 5);
             if ($this->confirm('Delete the Model file?')) {
                 $this->deleteModel();
             }
