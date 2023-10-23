@@ -115,7 +115,7 @@ class MvcBuilder extends GeneratorCommand
                 if ($relation) {
                     $model=Str::ucfirst(Str::camel(Str::replace('_id', '', $field)));
                     if (File::exists(App::basePath(config('mvc.path_model').'/'.$model.'.php'))) {
-                        $type_relation=$this->choice('Choose Relation Type', ['BelongsTo', 'HasMany', 'HasOne', 'BelongsToMany'], 0);
+                        $type_relation=$this->choice('Choose Relation Type', ['belongsTo', 'hasMany', 'hasOne', 'belongsToMany'], 0);
                     } else {
                         $this->warn('Model '.$model.' not found, please create it first !');
                         $this->inputModelFields();
