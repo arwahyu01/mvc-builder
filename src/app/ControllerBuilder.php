@@ -71,12 +71,23 @@ trait ControllerBuilder
     private function createValidation(): string
     {
         // Get validation rules for each field
-        $fields = collect($this->fields)->filter(fn($field) => $this->shouldIncludeValidationRule($field))
-            ->map(fn($field) => "'" . Str::replace('_morph', '', $field['field']) . "' => 'required',")
+        $validationRules = collect($this->fields)
+            ->filter(fn($field) => $this->shouldIncludeValidationRule($field))
+            ->map(function ($field) {
+                if (Str::endsWith($field['field'], '_id')) {
+                    // Check if the related model exists
+                    $model_name = Str::ucfirst(Str::camel(Str::replace('_id', '', $field['field'])));
+                    $target_model = App::basePath(config('mvc.path_model')) . '/' . $model_name . '.php';
+                    if (File::exists($target_model)) {
+                        return "'" . $field['field'] . "' => 'required|exists:" . Str::plural(Str::snake($model_name)) . ",id',";
+                    }
+                }
+                return "'" . $field['field'] . "' => 'required',";
+            })
             ->implode(PHP_EOL . "\t\t\t");
 
         // Remove the trailing newline character
-        return Str::beforeLast($fields, PHP_EOL);
+        return Str::beforeLast($validationRules, PHP_EOL);
     }
 
     /**
