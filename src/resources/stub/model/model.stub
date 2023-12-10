@@ -12,5 +12,6 @@ class {{ class }} extends Model
     use HasFactory, HasUuids, SoftDeletes;
 
     protected $fillable = [{{ fillable }}];
-
+    protected $casts = [{{ casts }}];
+    protected $table = '{{ table }}';
 }

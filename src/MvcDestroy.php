@@ -11,64 +11,25 @@ use Illuminate\Support\Str;
 
 class MvcDestroy extends Command
 {
-    protected $signature = 'delete:mvc {module}';
+    protected $signature = 'delete:mvc {module} {--all}';
     protected $description = 'Delete MVC, Model, Controller, View, Route';
-    private $model;
+    private string $model;
 
     public function handle(): bool
     {
         $this->model = $this->argument('module');
         $this->build();
-        return TRUE;
+        return true;
     }
 
     public function build(): void
     {
-        if ($this->confirm('Are you sure you want to delete the data ' . $this->model . '?')) {
-            if ($this->confirm('Do you want to delete the migration file?')) {
-                File::delete(App::basePath(Str::ucfirst(config('mvc.path_model')) . $this->model . '.php'));
-                $this->info('Model file successfully deleted');
-                $database = File::files(database_path('migrations'));
-                collect($database)->map(function ($data) {
-                    if (Str::contains($data, 'create_' . Str::snake(Str::plural($this->model)) . '_table.php')) {
-                        File::delete($data);
-                        if (Schema::hasTable(Str::snake(Str::plural($this->model)))) {
-                            DB::table('migrations')->where('migration', 'like', '%create_' . Str::snake(Str::plural($this->model)) . '_table%')->delete();
-                            Schema::disableForeignKeyConstraints();
-                            Schema::drop(Str::snake(Str::plural($this->model)));
-                            Schema::enableForeignKeyConstraints();
-                            $this->info('Your table has been successfully deleted from the database and migration file');
-                        }
-                    }
-                });
-            } else {
-                File::delete(App::basePath(Str::ucfirst(config('mvc.path_model')) . $this->model . '.php'));
-                if (!File::exists(App::basePath(Str::ucfirst(config('mvc.path_model')) . $this->model . '.php'))) {
-                    $this->info('Model file successfully deleted');
-                }
-            }
-            File::deleteDirectory(App::basePath(config('mvc.path_controller') . '/' . $this->model));
-            if (!File::exists(App::basePath(config('mvc.path_controller') . '/' . $this->model . '/' . $this->model . 'Controller' . '.php'))) {
-                $this->info('Controller file successfully deleted');
-            }
-            $target = resource_path(config('mvc.path_view') . '/' . Str::snake($this->model, '-'));
-            File::deleteDirectory($target);
-            if (!File::exists($target)) {
-                $this->info('View file successfully deleted');
-            }
+        $confirmationMessage = $this->option('all')
+            ? 'Are you sure you want to delete all files?'
+            : 'Are you sure you want to delete the MVC ' . $this->model . '?';
 
-            // route delete
-            $lowerName = Str::lower(Str::snake($this->model, '-'));
-            $route = File::get(App::basePath(config('mvc.path_route')));
-            if (Str::contains($route, '//' . $lowerName)) {
-                $star = Str::of($route)->before('//' . $lowerName);
-                $end = Str::of($route)->after('//end-' . $lowerName);
-                $route = $star . $end;
-                $route = preg_replace('/^\h*\v+/m', '', $route);
-                File::put(App::basePath(config('mvc.path_route')), $route);
-                $this->info('Route file successfully deleted' . PHP_EOL);
-            }
-
+        if ($this->confirm($confirmationMessage)) {
+            $this->option('all') ? $this->deleteAllFiles() : $this->deleteFiles();
             $this->call('optimize:clear');
             $this->info('Cache cleared successfully');
             $this->info('MVC ' . $this->model . ' successfully deleted');
@@ -76,5 +37,91 @@ class MvcDestroy extends Command
             $this->info('Your data is safe');
         }
     }
-}
 
+    private function deleteAllFiles()
+    {
+        $this->deleteModel();
+        $this->deleteView();
+        $this->deleteController();
+        $this->deleteMigration();
+        $this->deleteRoute();
+    }
+
+    private function deleteFiles(): void
+    {
+        if ($this->confirm('Delete the Model file?')) {
+            $this->deleteModel();
+        }
+        if ($this->confirm('Delete the View file?')) {
+            $this->deleteView();
+        }
+        if ($this->confirm('Delete the Controller file?')) {
+            $this->deleteController();
+        }
+        if ($this->confirm('Delete the migration file?')) {
+            $this->deleteMigration();
+        }
+        if ($this->confirm('Delete Route of this MVC?')) {
+            $this->deleteRoute();
+        }
+    }
+
+    private function deleteMigration(): void
+    {
+        $database = File::files(database_path('migrations'));
+        $filename = Str::snake(Str::plural($this->model));
+        collect($database)->map(function ($data) use ($filename) {
+            if (Str::contains($data, 'create_' . $filename . '_table.php')) {
+                File::delete($data);
+                if (Schema::hasTable($filename)) {
+                    DB::table('migrations')->where('migration', 'like', '%create_' . $filename . '_table%')->delete();
+                    Schema::disableForeignKeyConstraints();
+                    Schema::drop($filename);
+                    Schema::enableForeignKeyConstraints();
+                    $this->info('Your table has been successfully deleted from the database and migration file');
+                }
+            }
+        });
+    }
+
+    private function deleteModel(): void
+    {
+        $path = Str::replace('/', '\\', config('mvc.path_model')) . '\\' . $this->model . '.php';
+        File::delete(App::basePath($path));
+        if (!File::exists($path)) {
+            $this->info('Model file successfully deleted');
+        }
+    }
+
+    private function deleteView(): void
+    {
+        $path = resource_path(config('mvc.path_view') . '/' . Str::snake($this->model, '-'));
+        File::deleteDirectory($path);
+        if (!File::exists($path)) {
+            $this->info('View file successfully deleted');
+        }
+    }
+
+    private function deleteController(): void
+    {
+        $dir = App::basePath(config('mvc.path_controller') . '/' . $this->model);
+        File::deleteDirectory($dir);
+        if (!File::exists($dir . '/' . $this->model . 'Controller' . '.php')) {
+            $this->info('Controller file successfully deleted');
+        }
+    }
+
+    private function deleteRoute(): void
+    {
+        $lowerName = Str::lower(Str::snake($this->model, '-'));
+        $route = File::get(App::basePath(config('mvc.path_route')));
+        if (Str::contains($route, '//' . $lowerName)) {
+            $star = Str::of($route)->before('//' . $lowerName);
+            $end = Str::of($route)->after('//end-' . $lowerName);
+            $route = $star . $end;
+            $route = preg_replace('/^\h*\v+/m', '', $route);
+            File::put(App::basePath(config('mvc.path_route')), $route);
+            $this->info('Route file successfully deleted' . PHP_EOL);
+        }
+    }
+}
