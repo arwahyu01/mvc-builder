@@ -1,13 +1,13 @@
-<h3 style="text-align: center"> MVC Generator V1.0.1 </h3>
+<h3 style="text-align: center">MVC Generator V1.0.1</h3>
 <p style="text-align: center">
-MVC Generator is a package that can help you to create a new module with CRUD function and also create a view for that module. This package is very useful for save your time.
-<br>
-This library is specifically designed for <a href="https://packagist.org/packages/arwp/main-master" title="Laravel">arwp/main-master</a>  
-, and the code structure within this library is tailored to support that template. 
+  MVC Generator is a powerful package designed to streamline the creation of new modules with CRUD functionality and generate corresponding views. This tool is a time-saving asset for your projects.
+  <br>
+  This library is specifically crafted for <a href="https://packagist.org/packages/arwp/main-master" title="Laravel">arwp/main-master</a>, and its code structure is optimized to align seamlessly with that template.
 </p>
 <p style="text-align: center">
-Made with ❤️ by <a href="https://github.com/arwahyu01" title="Ar. Wahyu Pradana">ARWP</a>
+  Made with ❤️ by <a href="https://github.com/arwahyu01" title="Ar. Wahyu Pradana">ARWP</a>
 </p>
+
 
 ## Requirements
 
@@ -15,13 +15,14 @@ Made with ❤️ by <a href="https://github.com/arwahyu01" title="Ar. Wahyu Prad
 - PHP 8.1 or higher
 
 ## Features
-- Use `php artisan make:mvc [name of model]` to create a new module
-  - [x] Controller (with CRUD function)
-  - [x] Model (with fillable and relation)
-  - [x] Migration (with table and relation)
-  - [x] views (with CRUD function)
-  - [x] new route (with CRUD function)
-- Use `php artisan delete:mvc [name]` to delete a module (delete all file and table in database)
+- Utilize `php artisan make:mvc [model name]` to create a new module.
+  - [x] Controller (with CRUD functionality)
+  - [x] Model (with fillable fields and relationships)
+  - [x] Migration (with table creation and relationships)
+  - [x] Views (with CRUD functionality)
+  - [x] New route (with CRUD functionality)
+- Use `php artisan delete:mvc [name]` to delete a module (delete mvc files one by one with confirmation).
+- Use `php artisan delete:mvc [name] --all` to delete a module (delete all files and tables in the database).
 
 ## How to install
 ```bash
@@ -81,24 +82,22 @@ return [
     'route_prefix' => '', // Customize with your "Prefix Route" (e.g: backend, admin, etc) (optional)
 ];
 ```
-If you want to change the default "PATH ROUTE," you can do so in config/mvc.php.
+If you wish to modify the default "PATH ROUTE," you can make adjustments in the config/mvc.php file.
 ```
 return [
     ...
-    'path_route' => 'routes/web.php', // change this to your route file
+    'path_route' => 'routes/web.php', // Change this to your desired route file path
     ...
 ];
 ```
-Copy the code below to your route file (e.g: routes/web.php)
+Copy and paste the following code into your specified route file (e.g., routes/web.php):
 ```
 //{{route replacer}} DON'T REMOVE THIS LINE
 ```
 
 ## License
-MVC Generator is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+MVC Generator is released as open-source software under the [MIT license](https://opensource.org/licenses/MIT).
 
-I hope this project can help you to make your project faster and easier to develop :)
+This project is designed to enhance the efficiency and simplicity of your development process. I trust that this tool will prove valuable in accelerating your project development.
 
-If you like this project, please give me a star ⭐️, thank you very much.
-
-Buy me a coffee ☕️ : [click here](https://trakteer.id/arwp) thank you for your support.
+If you find this project beneficial, your support in the form of a star ⭐️ would be greatly appreciated. Thank you for your consideration and contribution.
