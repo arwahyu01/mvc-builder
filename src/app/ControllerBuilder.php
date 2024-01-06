@@ -87,7 +87,7 @@ trait ControllerBuilder
             ->implode(PHP_EOL . "\t\t\t");
 
         // Remove the trailing newline character
-        return Str::beforeLast($validationRules, PHP_EOL);
+        return $validationRules;
     }
 
     /**
