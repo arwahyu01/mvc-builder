@@ -81,7 +81,7 @@ trait ModelBuilder
                     : "(" . Str::ucfirst(Str::camel($name)) . "::class);";
 
                 // Build the relation function
-                $function .= "\t" . "public function " . Str::lower($name) . "()" . PHP_EOL . "\t" . "{" . PHP_EOL . "\t\t" . "return \$this->" . $field['type_relation'] . $target_relation . PHP_EOL . "\t" . "}" . PHP_EOL;
+                $function .= "\t" . "public function " . Str::lower($name) . "()" . PHP_EOL . "\t" . "{" . PHP_EOL . "\t\t" . "return \$this->" . ($field['type_relation'] ?? 'belongsTo') . $target_relation . PHP_EOL . "\t" . "}" . PHP_EOL;
             }
         }
 
