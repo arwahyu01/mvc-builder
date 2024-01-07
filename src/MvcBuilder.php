@@ -267,4 +267,15 @@ class MvcBuilder extends GeneratorCommand
             File::makeDirectory($path, 0755, true, true);
         }
     }
+
+    private function askForOptions()
+    {
+        $options = [];
+        $option = $this->ask('Type option value {key:value:true/false} (push enter to skip)');
+        while ($option != '') {
+            $options[] = explode(':', $option);
+            $option = $this->ask('Type option value {key:value:true/false} (push enter to skip)');
+        }
+        return $options;
+    }
 }

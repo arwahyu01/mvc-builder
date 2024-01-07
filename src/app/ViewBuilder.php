@@ -155,7 +155,7 @@ trait ViewBuilder
         $radio = '';
 
         foreach ($field['options'] as $item) {
-            $input = Str::replace('{{ field }}', $field['name'], config('mvc.view.radio'));
+            $input = Str::replace('{{ field }}', $field['field'], config('mvc.view.radio'));
             $input = Str::replace('{{ true }}', $item[2], $input);
             $radio .= Str::replace('{{ key }}', $item[0], Str::replace('{{ value }}', $item[1], $input)) . PHP_EOL . "\t\t\t";
         }
