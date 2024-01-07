@@ -102,7 +102,7 @@ trait ControllerBuilder
         // Filter and map the fields to get the related models
         $relations = collect($this->fields)
             ->filter(fn($field) => $this->shouldIncludeValidationRule($field) && $this->isRelatedModelExists($field, $path_model))
-            ->map(fn($field) => Str::camel(Str::replace('_id', '', $field['field'])))
+            ->map(fn($field) => Str::replace('_id', '', $field['field']))
             ->implode("','");
 
         // If there are relations, modify the data retrieval query
