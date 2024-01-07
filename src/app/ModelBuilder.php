@@ -32,7 +32,7 @@ trait ModelBuilder
             $replaced = Str::replace('{{ class }}', $this->model_name, $replaced);
             $replaced = Str::replace('{{ fillable }}', $this->createModelFields(), $replaced);
             $replaced = Str::replace('{{ casts }}', $this->createCasts(), $replaced);
-            $replaced = Str::replace('{{ table }}', Str::snake(Str::plural($this->model_name), '-'), $replaced);
+            $replaced = Str::replace('{{ table }}', Str::snake(Str::plural($this->model_name), '_'), $replaced);
             $replaced = Str::replaceLast('}', $this->createRelations() . '}', $replaced);
 
             // Write the updated content back to the model file

@@ -109,7 +109,7 @@ trait RouteBuilder
         $replaced = Str::replaceLast($key_replacer, "//" . $lower_name . PHP_EOL . $route_prefix . $key_replacer, $file_route);
 
         // Add the resource route after the grouped prefix
-        $replaced = Str::replaceLast($key_replacer, $route_resource . PHP_EOL . "\t//end-" . $lower_name . PHP_EOL . "\t" . $key_replacer, $replaced);
+        $replaced = Str::replaceLast($key_replacer, $route_resource . PHP_EOL . "\t//end-" . $lower_name . PHP_EOL . "\t\t" . $key_replacer, $replaced);
 
         return $replaced;
     }
