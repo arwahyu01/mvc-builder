@@ -90,10 +90,8 @@ class MvcBuilder extends GeneratorCommand
             // Check for the selected option and execute the corresponding step
             if ($selectedOption == 'migration' || $selectedOption == 't') {
                 $this->migrationBuilder();
-                $this->modelBuilder();
             } elseif ($selectedOption == 'model' || $selectedOption == 'm') {
                 $this->modelBuilder();
-                $this->migrationBuilder();
             } elseif ($selectedOption == 'view' || $selectedOption == 'v') {
                 $this->viewBuilder();
             } elseif ($selectedOption == 'controller' || $selectedOption == 'c') {
